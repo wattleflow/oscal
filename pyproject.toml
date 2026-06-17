@@ -1,6 +1,6 @@
 [project]
 name = "wattleflow-oscal"
-version = "0.0.1"
+version = "0.0.2"
 description = "Wattleflow OSCAL"
 readme = "README.md"
 license = "Apache-2.0"
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "wattleflow-core",
+    "wattleflow",
     "wattleflow-workflow",
 ]
 
