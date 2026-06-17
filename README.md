@@ -1,28 +1,33 @@
-# WattleFlow Core
-![WattleFlow Logo](src/wattleflow/logo/wattleflow.png)
+# WattleFlow OSCAL
 
-[![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/)
-[![Python versions](https://img.shields.io/pypi/pyversions/wattleflow.svg)](https://pypi.org/project/wattleflow/)
-[![License](https://img.shields.io/pypi/l/wattleflow.svg)](https://github.com/wattleflow/core/blob/default/LICENSE)
-
-# WattleFlow workflow framework add-in
+![WattleFlow Logo](https://github.com/wattleflow/core/raw/default/src/wattleflow/logo/wattleflow.png)
 
 ---
-Wattleflow OSCAL (Open Security Controls Assessment Language)
+Wattleflow - Open Security Controls Assessment Language
 ---
+
+[![PyPI version](https://img.shields.io/pypi/v/wattleflow-oscal.svg)](https://pypi.org/project/wattleflow-oscal/)
+[![Python versions](https://img.shields.io/pypi/pyversions/wattleflow-oscal.svg)](https://pypi.org/project/wattleflow-oscal/)
+[![License](https://img.shields.io/pypi/l/wattleflow-oscal.svg)](https://github.com/wattleflow-oscal/core/blob/default/LICENSE)
+
+
+# WattleFlow - Workflow Framework Add-In
+
+
 
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | [![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/) (latest release on PyPI) |
-| **License**              | Apache 2.0 License                                                      |
-| **Python Compatibility** | Python >=3.11                                                           |
-| **Dependencies**         | wattleflow, wattleflow-oscal, wattleflow-workflow                       |
+| **Version**              | [![PyPI version](https://img.shields.io/pypi/v/wattleflow-oscal.svg)](https://pypi.org/project/wattleflow-oscal/) (latest release on PyPI) |
+| **License**              | [![License](https://img.shields.io/pypi/l/wattleflow-oscal.svg)](https://github.com/wattleflow-oscal/core/blob/default/LICENSE) |
+| **Python Compatibility** | [![Python versions](https://img.shields.io/pypi/pyversions/wattleflow-oscal.svg)](https://pypi.org/project/wattleflow-oscal/)|
+| **Dependencies**         | [wattleflow-core](https://www.github.com/wattleflow/core.git), [wattleflow-workflow](https://www.github.com/wattleflow/workflow.git) |
 | **Size**                 | nimble                                                                  |
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
 
 
-# WattleFlow Processors
-Wattlelflow `oscal` is built on ISM add in for wattleflow ecosystem.
+# OSCAL
+Wattlelflow `oscal` is built on ISM add in for wattleflow workflow ecosystem.
+
 
 # Installation
 ```bash
