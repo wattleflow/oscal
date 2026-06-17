@@ -1,0 +1,61 @@
+[project]
+name = "wattleflow-oscal"
+version = "0.0.1"
+description = "Wattleflow OSCAL"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
+keywords = ["wattleflow", "oscal", "ISM", "NIST", "ASD", "compliance", "python", "library", "security", "automation", "devops", "cloud", "infrastructure", "monitoring", "logging", "alerting", "incident response"]
+requires-python = ">=3.11"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "wattleflow-core",
+    "wattleflow-workflow",
+]
+
+[build-system]
+requires = ["setuptools", "setuptools_scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+homepage = "https://github.com/wattleflow/oscal.git"
+repository = "https://github.com/wattleflow/oscal.git"
+documentation = "https://github.com/wattleflow/oscal.git"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.package-data]
+# Vendored OSCAL resources (ASD ISM catalog/profiles, NIST->ISM crosswalk) must
+# ship with the wheel; the loaders read them at runtime.
+"wattleflow.oscal" = ["resources/**/*.json"]
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+local_scheme = "no-local-version"
+fallback_version = "0.0.0"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+# wattleflow `core` and `workflow` ships in the separate dependency
+exclude = []
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B"]
+ignore = ["E203", "E731", "I001"]

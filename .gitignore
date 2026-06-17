@@ -1,3 +1,6 @@
+.gitignore # for Python projects, based on the official GitHub gitignore template for Python:
+Makefile
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -24,7 +27,8 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
+CL*.*
+MANIFEST.*
 
 # PyInstaller
 #   Usually these files are written by a python script from a template
@@ -199,7 +203,8 @@ cython_debug/
 #   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #   and can be added to the global gitignore or merged into this file. However, if you prefer, 
 #   you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+.vscode/
+
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
