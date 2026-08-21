@@ -1,6 +1,6 @@
 [project]
 name = "wattleflow-oscal"
-version = "0.0.4"
+version = "0.0.5"
 description = "Wattleflow OSCAL"
 readme = "README.md"
 license = "Apache-2.0"

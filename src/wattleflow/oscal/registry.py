@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
 from typing import Dict, Iterator, Optional
-from wattleflow.core import IWattleflow
+from wattleflow.concrete import Wattleflow
 from .models import Catalog, Control
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
@@ -29,7 +29,7 @@ __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 # --------------------------------------------------------------------------- #
 
 
-class OSCALCatalogRegistry(IWattleflow):
+class OSCALCatalogRegistry(Wattleflow):
     """In-memory registry of OSCAL Catalogs indexed by UUID, with a flat
     control-id lookup across all registered catalogs.
 

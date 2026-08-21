@@ -9,8 +9,7 @@
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
 import uuid as _uuid
-from dataclasses import replace
-from typing import List, Optional, Set, Tuple
+from typing import Optional, Set
 from .models import Catalog, Control, Group, Profile
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
@@ -26,58 +25,6 @@ __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 # --------------------------------------------------------------------------- #
 
 # --------------------------------------------------------------------------- #
-# region Helpers                                                              #
-# --------------------------------------------------------------------------- #
-
-
-def _filter_controls(
-    controls: List[Control],
-    selected: Set[str],
-) -> Tuple[List[Control], Set[str]]:
-    """Return (kept_controls, ids_found). Keeps a control if its id is
-    selected OR any descendant is selected; in the latter case the control
-    is rebuilt with only the surviving children.
-    """
-    kept: List[Control] = []
-    found: Set[str] = set()
-    for ctrl in controls:
-        sub_kept, sub_found = _filter_controls(ctrl.controls, selected)
-        is_self_selected = ctrl.id in selected
-        if is_self_selected or sub_kept:
-            if sub_kept != ctrl.controls:
-                kept.append(replace(ctrl, controls=sub_kept))
-            else:
-                kept.append(ctrl)
-            found.update(sub_found)
-            if is_self_selected:
-                found.add(ctrl.id)
-    return kept, found
-
-
-def _filter_groups(
-    groups: List[Group],
-    selected: Set[str],
-) -> Tuple[List[Group], Set[str]]:
-    """Recursively prune groups; drop any group that contains no surviving
-    controls or sub-groups.
-    """
-    kept: List[Group] = []
-    found: Set[str] = set()
-    for group in groups:
-        sub_groups, gfound = _filter_groups(group.groups, selected)
-        sub_controls, cfound = _filter_controls(group.controls, selected)
-        if sub_groups or sub_controls:
-            kept.append(replace(group, groups=sub_groups, controls=sub_controls))
-            found.update(gfound)
-            found.update(cfound)
-    return kept, found
-
-
-# --------------------------------------------------------------------------- #
-# endregion Helpers                                                           #
-# --------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------- #
 # region Resolver                                                             #
 # --------------------------------------------------------------------------- #
 
@@ -90,6 +37,11 @@ def resolve(
     strict: bool = True,
 ) -> Catalog:
     """Resolve an OSCAL Profile against a source Catalog.
+
+    Pruning is delegated to the nodes that hold the children
+    (``Control.pruned`` / ``Group.pruned``); what this function owns is the
+    profile's side of resolution: which ids are selected, how strictly a
+    missing id is treated, and what the resulting Catalog is made of.
 
     Walks ``source`` and keeps only controls whose ids are selected by
     ``profile.imports[*].include_controls[*].with_ids``, minus any in
@@ -117,16 +69,12 @@ def resolve(
     if not selected:
         raise ValueError(f"Profile {profile.uuid} selects no controls")
 
-    excluded: Set[str] = set()
-    for imp in profile.imports:
-        for exc in imp.exclude_controls:
-            excluded.update(exc.with_ids)
-    target_ids = selected - excluded
+    target_ids = selected - set(profile.excluded_control_ids())
 
-    kept_controls, ctrl_found = _filter_controls(source.controls, target_ids)
-    kept_groups, group_found = _filter_groups(source.groups, target_ids)
+    kept_controls, control_found = Control.prune_all(source.controls, target_ids)
+    kept_groups, group_found = Group.prune_all(source.groups, target_ids)
 
-    found = ctrl_found | group_found
+    found = control_found | group_found
     if strict:
         missing = target_ids - found
         if missing:
@@ -148,4 +96,12 @@ def resolve(
 
 # --------------------------------------------------------------------------- #
 # endregion Resolver                                                          #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+# region Public API                                                           #
+# --------------------------------------------------------------------------- #
+__all__ = ["resolve"]
+# --------------------------------------------------------------------------- #
+# endregion Public API                                                        #
 # --------------------------------------------------------------------------- #

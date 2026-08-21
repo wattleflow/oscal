@@ -1,6 +1,6 @@
 # WattleFlow OSCAL
 
-![WattleFlow Logo](https://github.com/wattleflow/core/raw/default/src/wattleflow/logo/wattleflow.png)
+![WattleFlow Logo](https://raw.githubusercontent.com/wattleflow/core/default/src/wattleflow/logo/wattleflow.png)
 
 ---
 Wattleflow - Open Security Controls Assessment Language
@@ -22,7 +22,7 @@ Wattleflow - Open Security Controls Assessment Language
 | **Python Compatibility** | [![Python versions](https://img.shields.io/pypi/pyversions/wattleflow-oscal.svg)](https://pypi.org/project/wattleflow-oscal/)|
 | **Dependencies**         | [wattleflow-core](https://www.github.com/wattleflow/core.git), [wattleflow-workflow](https://www.github.com/wattleflow/workflow.git) |
 | **Size**                 | nimble                                                                  |
-| **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
+| **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/documentation.git) |
 
 
 # OSCAL

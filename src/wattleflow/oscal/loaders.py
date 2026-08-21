@@ -9,8 +9,10 @@
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
 import json
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Mapping, Union
+from wattleflow.concrete import Wattleflow
 from wattleflow.core import IStrategy, IWattleflow
 from .models import Catalog, Profile
 
@@ -36,35 +38,34 @@ Pathish = Union[str, Path]
 # --------------------------------------------------------------------------- #
 
 # --------------------------------------------------------------------------- #
-# region Helpers                                                              #
-# --------------------------------------------------------------------------- #
-
-
-def _read_json(path: Pathish) -> Mapping[str, Any]:
-    p = Path(path)
-    if not p.is_file():
-        raise FileNotFoundError(f"OSCAL JSON not found: {p}")
-    with p.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
-
-
-def _require_path(kwargs: Mapping[str, Any], loader: str) -> Pathish:
-    path = kwargs.get("path")
-    if path is None:
-        raise ValueError(f"{loader} requires 'path' keyword argument")
-    return path
-
-
-# --------------------------------------------------------------------------- #
-# endregion Helpers                                                           #
-# --------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------- #
 # region Loaders                                                              #
 # --------------------------------------------------------------------------- #
 
 
-class ASDOSCALCatalogLoader(IStrategy):
+class ASDOSCALLoader(Wattleflow, IStrategy, ABC):
+    """Common behaviour of the ASD ISM OSCAL loaders: reading the JSON
+    source and validating the keyword contract."""
+
+    @classmethod
+    def _require_path(cls, kwargs: Mapping[str, Any]) -> str | Path:
+        path = kwargs.get("path")
+        if path is None:
+            raise ValueError(f"{cls.__name__} requires 'path' keyword argument")
+        return path
+
+    @staticmethod
+    def _read_json(path: Pathish) -> Mapping[str, Any]:
+        source = Path(path)
+        if not source.is_file():
+            raise FileNotFoundError(f"OSCAL JSON not found: {source}")
+        with source.open("r", encoding="utf-8") as fh:
+            return json.load(fh)
+
+    @abstractmethod
+    def execute(self, caller: IWattleflow, **kwargs) -> Any: ...
+
+
+class ASDOSCALCatalogLoader(ASDOSCALLoader):
     """Loads an ASD ISM OSCAL JSON *catalog* (full ISM or resolved-profile
     catalog) into a :class:`~wattleflow.oscal.models.Catalog`.
 
@@ -73,14 +74,14 @@ class ASDOSCALCatalogLoader(IStrategy):
     """
 
     def execute(self, caller: IWattleflow, **kwargs) -> Catalog:
-        path = _require_path(kwargs, self.__class__.__name__)
-        payload = _read_json(path)
+        path = self._require_path(kwargs)
+        payload = self._read_json(path)
         if "profile" in payload:
             raise ValueError(f"{path} is an OSCAL Profile document — use ASDOSCALProfileLoader")
         return Catalog.from_dict(payload)
 
 
-class ASDOSCALProfileLoader(IStrategy):
+class ASDOSCALProfileLoader(ASDOSCALLoader):
     """Loads an ASD ISM OSCAL JSON *profile* (selector document) into a
     :class:`~wattleflow.oscal.models.Profile`.
 
@@ -90,8 +91,8 @@ class ASDOSCALProfileLoader(IStrategy):
     """
 
     def execute(self, caller: IWattleflow, **kwargs) -> Profile:
-        path = _require_path(kwargs, self.__class__.__name__)
-        payload = _read_json(path)
+        path = self._require_path(kwargs)
+        payload = self._read_json(path)
         if "catalog" in payload:
             raise ValueError(f"{path} is an OSCAL Catalog document — use ASDOSCALCatalogLoader")
         return Profile.from_dict(payload)
@@ -99,4 +100,16 @@ class ASDOSCALProfileLoader(IStrategy):
 
 # --------------------------------------------------------------------------- #
 # endregion Loaders                                                           #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+# region Public API                                                           #
+# --------------------------------------------------------------------------- #
+__all__ = [
+    "ASDOSCALCatalogLoader",
+    "ASDOSCALLoader",
+    "ASDOSCALProfileLoader",
+]
+# --------------------------------------------------------------------------- #
+# endregion Public API                                                        #
 # --------------------------------------------------------------------------- #
